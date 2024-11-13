@@ -6,7 +6,7 @@
 var longestSubstring = function (s, k) {
   let ret = 0;
 
-  const test = (ary) => {
+  const splitAndFindMaxLen = (ary) => {
     for (const str of ary) {
       if (str.length >= k) {
         let map = new Map();
@@ -17,10 +17,9 @@ var longestSubstring = function (s, k) {
         }
 
         for (const [key, val] of map) {
-          if (val < k) {
-            separator += key + "|";
-          }
+          if (val < k) separator += key + "|";
         }
+
         if (separator) {
           // 다시 쪼개야됨
           let splitAry = [];
@@ -29,7 +28,7 @@ var longestSubstring = function (s, k) {
 
           splitAry = str.split(regex).filter(Boolean);
 
-          test(splitAry);
+          splitAndFindMaxLen(splitAry);
         } else {
           ret = Math.max(ret, str.length);
         }
@@ -37,7 +36,7 @@ var longestSubstring = function (s, k) {
     }
   };
 
-  test([s]);
+  splitAndFindMaxLen([s]);
 
   return ret;
 };
