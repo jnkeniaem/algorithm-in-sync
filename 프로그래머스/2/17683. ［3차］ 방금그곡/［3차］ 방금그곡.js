@@ -1,29 +1,49 @@
 function solution(m, musicinfos) {
-  const arr = musicinfos.map((mi) => {
-    const [start, end, title, code] = mi.split(",");
-    const hour = end.slice(0, 2) - start.slice(0, 2);
-    const minute = end.slice(3) - start.slice(3);
-    const runtime = 60 * hour + minute;
+  // let map = new Map();
+  const ary = ["", "0"];
 
-    const codeArr = code.match(/[A-Z]#?/g);
-    let stream = code.repeat(Math.floor(runtime / codeArr.length));
-    stream += codeArr.slice(0,runtime % codeArr.length).join("");
-    return [title, runtime, stream];
-  });
+  for (const musicInfo of musicinfos) {
+    const [sTime, eTime, title, info] = musicInfo.split(",");
+    const [sH, sM] = sTime.split(":").map((elem) => Number(elem));
+    const [eH, eM] = eTime.split(":").map((elem) => Number(elem));
+    const playedTime = 60 * eH + eM - (60 * sH + sM);
+    const mConverted = m.replace(/([A-Z])#/g, (_, ch) => ch.toLowerCase());
+    const infoConverted = info.replace(/([A-Z])#/g, (_, ch) =>
+      ch.toLowerCase()
+    );
+    if (mConverted.length > playedTime) continue;
 
-  const answer = arr.filter(([_, __, stream]) => {
-    let i = stream.indexOf(m);
-    if (i === -1) return false;
-    while (i !== -1) {
-      if (stream[i + m.length] !== "#") return true;
-      i = stream.indexOf(m, i + 1);
+    let repeatedCnt = Math.floor(playedTime / infoConverted.length); // 반복재생된 횟수
+    let playedStr =
+      infoConverted.repeat(repeatedCnt) +
+      infoConverted.slice(0, playedTime % infoConverted.length);
+    if (!playedStr.includes(mConverted)) {
+      continue;
+    } else {
+      // 있으면
+      // if (map.size) {
+      //   let [key, val] = [...map][0];
+      //   if (val === playedTime) continue;
+      //   if (val < playedTime) {
+      //     map.delete(key);
+      //   }
+      // }
+      // map.set(title, playedTime);
+      if (ary[0]) {
+                if (Number(ary[1]) >= playedTime) continue;
+
+        // else if (Number(ary[1]) < playedTime)
+      }
+      ary[0] = title;
+            ary[1] = playedTime.toString();
+
     }
-  });
-  if (!answer.length) return "(None)";
-
-  answer.sort((a, b) => {
-    if (a[1] === b[1]) return 0;
-    return b[1] - a[1];
-  });
-  return answer[0][0];
+  }
+  // if (map.size) {
+  //   let [key, val] = [...map][0];
+  //   return key;
+  // } else return "(None)";
+  if (ary[0]) {
+    return ary[0];
+  } else return "(None)";
 }
