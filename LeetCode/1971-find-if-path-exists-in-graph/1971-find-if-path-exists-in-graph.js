@@ -6,8 +6,8 @@
  * @return {boolean}
  */
 var validPath = function(n, edges, source, destination) {
-  if (n === 1)
-    return true;
+  if (n === 1) return true;
+
   const visited = new Array(n).fill(false);
   const neighbors = new Array(n).fill([]).map(() => new Array());
 
@@ -18,16 +18,18 @@ var validPath = function(n, edges, source, destination) {
   }
 
   const q = [source];
-
-  while (q.length) {
-    const vertex = q.shift();
-    visited[vertex] = true;
+  let idx = 0;
+  while (idx < q.length) {
+    const vertex = q[idx];
     const curNeighbors = neighbors[vertex];
 
     for (const neighbor of curNeighbors) {
       if (neighbor === destination) return true;
       if (visited[neighbor] === false) q.push(neighbor);
     }
+    visited[vertex] = true;
+    idx++;
   }
+
   return false;
 };
