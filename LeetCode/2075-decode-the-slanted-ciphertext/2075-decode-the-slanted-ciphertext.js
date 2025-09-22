@@ -8,22 +8,23 @@ var decodeCiphertext = function (encodedText, rows) {
 
   let originalText = "";
 
-  const ary = new Array(rows).fill([]).map(() => new Array());
+  const matrix = new Array(rows).fill("");
   const cols = encodedText.length / rows;
 
   for (let i = 0; i < rows; ++i) {
-    ary[i] = encodedText.substring(cols * i, cols * i + cols);
+    matrix[i] = encodedText.substring(cols * i, cols * i + cols);
   }
   // 문자열 끊어서 배열에 넣어주기
+
   let [y, x] = [0, 0];
-  let cnt = 0; // 우상향 빗금 횟수
+  let slantedLinesCnt = 0; // 빗금 횟수
   while (y < rows && x < cols) {
-    originalText += ary[y++][x++];
+    originalText += matrix[y++][x++];
 
     if (y === rows || x === cols) {
-      cnt++;
+      slantedLinesCnt++;
       y = 0;
-      x = cnt;
+      x = slantedLinesCnt;
     }
   }
 
