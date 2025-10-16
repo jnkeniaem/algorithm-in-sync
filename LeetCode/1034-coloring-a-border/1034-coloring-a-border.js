@@ -1,16 +1,20 @@
+/**
+ * @param {number[][]} grid
+ * @param {number} row
+ * @param {number} col
+ * @param {number} color
+ * @return {number[][]}
+ */
 var colorBorder = function (grid, row, col, color) {
   const m = grid.length;
   const n = grid[0].length;
   const finalGrid = new Array(m).fill([]).map((_, idx) => [...grid[idx]]);
   const visited = new Array(m).fill(false).map(() => new Array(n).fill(false));
-  const q = [[row, col]]; // 컴포넌트 색만 들어가기
+  const q = [[row, col]]; // 컴포넌트 요소만 들어가기
 
   while (q.length) {
     const [curY, curX] = q.pop();
-    // 순서가 중요하지 않아서 shift 말고 pop해도 상관없을듯. 시간 복잡도 더 낮은 pop으로 ㄱ
-    // visited 체크
 
-    // 4방향 체크
     const directions = [
       [1, 0],
       [0, 1],
@@ -31,23 +35,23 @@ var colorBorder = function (grid, row, col, color) {
       visited[curY][curX] = true;
 
       const isBorder = checkBorder();
-
-      // 경계인지 확인.
       if (isBorder) finalGrid[curY][curX] = color;
-      // 제출 그리드 색 변경
+      // 경계 사각형이면 -> 제출 그리드 색 변경
 
-      // 인접 사각형들 q에 다 넣기 + grid 안에만 있어야 함.
+      // grid 안에 있는 && 인접 사각형들 q에 다 넣기
       for (const [y, x] of directions) {
+        const [newY, newX] = [curY + y, curX + x];
+
         if (
-          curY + y < 0 ||
-          curY + y >= m ||
-          curX + x < 0 ||
-          curX + x >= n ||
-          grid[curY + y][curX + x] !== grid[curY][curX]
+          newY < 0 ||
+          newY >= m ||
+          newX < 0 ||
+          newX >= n ||
+          grid[newY][newX] !== grid[curY][curX]
         )
           continue;
 
-        q.push([curY + y, curX + x]);
+        q.push([newY, newX]);
       }
     }
   }
