@@ -8,7 +8,7 @@
 var colorBorder = function (grid, row, col, color) {
   const m = grid.length;
   const n = grid[0].length;
-  const finalGrid = new Array(m).fill([]).map((_, idx) => [...grid[idx]]);
+  const finalGrid = grid.map((elem) => [...elem]);
   const visited = new Array(m).fill(false).map(() => new Array(n).fill(false));
   const q = [[row, col]]; // 컴포넌트 요소만 들어가기
 
