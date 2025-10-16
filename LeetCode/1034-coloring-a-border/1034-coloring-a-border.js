@@ -12,21 +12,22 @@ var colorBorder = function (grid, row, col, color) {
   const visited = new Array(m).fill(false).map(() => new Array(n).fill(false));
   const q = [[row, col]]; // 컴포넌트 요소만 들어가기
 
+  const directions = [
+    [1, 0],
+    [0, 1],
+    [-1, 0],
+    [0, -1],
+  ]; //
+
   while (q.length) {
     const [curY, curX] = q.pop();
-
-    const directions = [
-      [1, 0],
-      [0, 1],
-      [-1, 0],
-      [0, -1],
-    ];
 
     const checkBorder = () => {
       if (curY === 0 || curY === m - 1 || curX === 0 || curX === n - 1)
         return true;
+      const curColor = grid[curY][curX]; //
       for (const [y, x] of directions) {
-        if (grid[curY + y][curX + x] !== grid[curY][curX]) return true;
+        if (grid[curY + y][curX + x] !== curColor) return true;
       }
       return false;
     };
