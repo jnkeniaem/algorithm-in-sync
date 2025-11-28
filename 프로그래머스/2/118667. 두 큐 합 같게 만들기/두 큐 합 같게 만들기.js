@@ -2,6 +2,7 @@ function solution(queue1, queue2) {
   let answer = 0;
   let [q1Sum, q2Sum] = [0, 0];
   let totalElemCnt = 0;
+
   queue1.map((elem) => {
     q1Sum += elem;
     totalElemCnt++;
@@ -24,6 +25,13 @@ function solution(queue1, queue2) {
   )
     return -1;
 
+  const checkOverlap = (q) => {
+    return history.has(q) ? true : false;
+  }; // history에 있는 배열이랑 겹치는 지 확인
+  const history = new Set();
+  history.add(queue1.join());
+  history.add(queue2.join());
+
   while (1) {
     if (q1Sum > 0 && q2Sum > 0) {
       if (q1Sum > q2Sum) {
@@ -34,7 +42,7 @@ function solution(queue1, queue2) {
         q1Sum = 0;
       }
     }
-    // 2 합이 다 >0 -> 작은거 기준으로 0으로 맞춰주기
+    // 2 합이 다 > 0 -> 작은거 기준으로 0으로 맞춰주기
 
     if (q1Sum === q2Sum) return answer;
     else if (q1Sum > q2Sum) {
@@ -49,39 +57,62 @@ function solution(queue1, queue2) {
       q1Copy.push(q2Copy[q2Front]);
       q2Front++;
     }
-    answer++;
 
-    if (answer >= 2 * totalElemCnt) {
-      console.log(q1Copy, q2Copy);
-      let pass = false;
-      // 현재 큐가 queue1 / queue2와 같다면 ? -> return -1
-      for (let i = q1Front; i < queue1.length; ++i) {
-        if (queue1[i - q1Front] !== q1Copy[i]) {
-          pass = true;
-          break;
+    answer++;
+    if (q1Sum === q2Sum) return answer;
+
+    if (answer >= totalElemCnt) {
+      if (
+        checkOverlap(q1Copy.slice(q1Front).join()) &&
+        checkOverlap(q2Copy.slice(q2Front).join())
+      )
+        return -1;
+      history.add(q1Copy.slice(q1Front).join());
+      history.add(q2Copy.slice(q2Front).join());
+      // 넣기 전에 겹치는지 확인
+      let pass1 = false;
+      let pass2 = false;
+
+      if (queue1[0] === q1Copy[q1Front]) {
+        for (let i = 0; i < queue1.length; ++i) {
+          if (queue1[i] !== q1Copy[q1Front + i]) {
+            pass1 = true;
+            break;
+          }
         }
       }
-      for (let i = q1Front; i < queue2.length; ++i) {
-        if (queue2[i - q1Front] !== q1Copy[i]) {
-          pass = true;
-          break;
+
+      if (queue1[0] === q1Copy[q1Front]) {
+        for (let i = 0; i < queue2.length; ++i) {
+          if (queue2[i] !== q1Copy[q1Front + i]) {
+            pass1 = true;
+            break;
+          }
         }
       }
-      for (let i = q2Front; i < queue1.length; ++i) {
-        if (queue1[i - q2Front] !== q2Copy[i]) {
-          pass = true;
-          break;
+
+      if (queue1[0] === q2Copy[q2Front]) {
+        for (let i = 0; i < queue1.length; ++i) {
+          if (queue1[i] !== q2Copy[q2Front + i]) {
+            pass2 = true;
+            break;
+          }
         }
       }
-      for (let i = q2Front; i < queue2.length; ++i) {
-        if (queue2[i - q2Front] !== q2Copy[i]) {
-          pass = true;
-          break;
+
+      if (queue2[0] === q2Copy[q2Front]) {
+        for (let i = q2Front; i < queue2.length; ++i) {
+          if (queue2[i] !== q2Copy[q2Front + i]) {
+            pass2 = true;
+            break;
+          }
         }
       }
-      if (pass === false) return -1;
+
+      if (pass1 === false && pass2 === false) {
+        return -1;
+      }
     }
-    // 2n이면
   }
 
   return answer;
