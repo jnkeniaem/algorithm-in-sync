@@ -5,7 +5,7 @@ function solution(bridge_length, weight, truck_weights) {
   const trucksOnBridge = []; // {weight, mileage}
   let OnBridgeFront = 0;
   let availableWeight = weight;
-
+ 
   while (
     waitingFront !== waitingTrucks.length ||
     OnBridgeFront !== trucksOnBridge.length
@@ -41,7 +41,7 @@ function solution(bridge_length, weight, truck_weights) {
       trucksOnBridge.push({ weight: curTruck, mileage: 1 });
       waitingFront++;
       availableWeight -= curTruck;
-    }
+    } 
 
     elapsedTime++;
   }
