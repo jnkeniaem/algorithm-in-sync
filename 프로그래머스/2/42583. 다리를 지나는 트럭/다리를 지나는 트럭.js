@@ -34,11 +34,8 @@ function solution(bridge_length, weight, truck_weights) {
 
     // 올라 탈 트럭 판별하고 올리기
     const hasSpace = trucksOnBridgeLen - OnBridgeFront < bridge_length;
-    // const availableLen =
-    //   bridge_length - (trucksOnBridgeLen - OnBridgeFront);
 
     const curTruck = waitingTrucks[waitingFront];
-    // if (availableLen && availableWeight >= curTruck) {
     if (hasSpace && availableWeight >= curTruck) {
       // 다리로 이동
       trucksOnBridge.push({ weight: curTruck, mileage: 1 });
