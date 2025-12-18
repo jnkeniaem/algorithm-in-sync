@@ -1,43 +1,64 @@
 function solution(n, wires) {
-    let answer = Number.MAX_SAFE_INTEGER;
-    let max = 0;
-    let idx = 0;
-    let ary = new Array(n + 1).fill([]).map((elem) => new Array());
-    
-    for (const [v1, v2] of wires) {
-        ary[v1].push(v2);
-        ary[v2].push(v1);
-    }
-    
-    const dfs = (elem, visited) => {
-        visited[elem] = true;
-        let cnt = 1;
-        
-        for (let neibor of ary[elem]) {
-            if (!visited[neibor]) {
-                cnt += dfs(neibor, visited);
-            }
-        }
-        return cnt;
-    }
-    
-    for (const [v1, v2] of wires) {
-        let visited = new Array(n + 1).fill(false);
-        
-        ary[v1] = ary[v1].filter(elem => elem != v2);
-        ary[v2] = ary[v2].filter(elem => elem != v1);
-        
-        let cnt = dfs(v1, visited);
-        let other = n - cnt;
-        console.log(cnt);
-        answer = Math.min(Math.abs(cnt - other), answer);
-        
-        ary[v1].push(v2);
-        ary[v2].push(v1);
-        // console.log(a, b)
-    }
-    
-    return answer;
-}
+  let answer = 100;
+  // const wiresCnt = new Array(n + 1).fill(0); // idx:연결 개수
+  const map = new Map(); // v1 : [v2, ...]
 
-    // console.log(ary)
+  for (let i = 0; i < wires.length; ++i) {
+    const [v1, v2] = wires[i];
+
+    let val = map.get(v1);
+    if (val === undefined) {
+      map.set(v1, [v2]);
+    } else val.push(v2);
+
+    val = map.get(v2);
+    if (val === undefined) {
+      map.set(v2, [v1]);
+    } else val.push(v1);
+
+    // wiresCnt[v1]++;
+    // wiresCnt[v2]++;
+  }
+  // 각 송전탑의 연결 개수 구하기
+  //
+  const mapIntoArray = Array.from(map);
+
+  // 연결 개수가 가장 많은 순대로 sort
+  mapIntoArray.sort((x, y) => y[1].length - x[1].length);
+
+  const visited = new Array(n + 1).fill(false);
+  let nodeCnt = 0;
+  const getNodes = (root) => {
+    visited[root] = true;
+    const value = map.get(root);
+    for (const node of value) {
+      if (visited[node] === false) {
+        visited[node] = true;
+        nodeCnt++;
+        getNodes(node);
+      }
+    }
+  };
+
+  for (const [number, val] of mapIntoArray) {
+    for (const v of val) {
+      visited[number] = true;
+      // visited[v] = true;
+
+      nodeCnt = 1; // 본인
+
+      // TODO : visited 초기화
+      getNodes(v);
+
+      answer = Math.min(answer, Math.abs(n - nodeCnt - nodeCnt));
+      visited.fill(false);
+      // 하나씩 끊어보기 시뮬레이션
+      // 줄줄이 엮여있는 소세지를 비교해야됨.
+    }
+  }
+  /*
+  3. 연결개수 제일 높은것부터 차례로 끊기?
+  - n/2 먼저 구하기
+  */
+  return answer;
+}
