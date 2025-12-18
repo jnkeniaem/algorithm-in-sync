@@ -1,33 +1,28 @@
 function solution(n, wires) {
-  let answer = 100;
-  const adjacents = new Array(n + 1).fill([]).map((_) => new Array().fill([]));
-  const visited = new Array(n + 1).fill(false);
- 
-  // 각 송전탑의 연결 현황 구하기
-  for (let i = 0; i < wires.length; ++i) {
-    const [v1, v2] = wires[i];
-    adjacents[v1].push(v2);
-    adjacents[v2].push(v1);
-  }
-
-  const getNodes = (root) => {
-    let nodeCnt = 1;
-
-    visited[root] = true;
-
-    for (const node of adjacents[root]) {
-      if (visited[node] === false) nodeCnt += getNodes(node);
-    }
-
-    return nodeCnt;
-  };
+  let answer = n;
+  // 계속 작은 값으로 갱신
+  const graph = new Array(n + 1).fill([]).map((_) => new Array().fill([]));
 
   for (const [v1, v2] of wires) {
-    // 하나씩 끊어보기 시뮬레이션
-    visited[v1] = true;
-    answer = Math.min(answer, Math.abs(n - 2 * getNodes(v2)));
-    visited.fill(false);
+    graph[v1].push(v2);
+    graph[v2].push(v1);
   }
+
+  // root 포함한 자식 노드 개수
+  const dfs = (root, alreadyVisitedNode) => {
+    const neighbors = graph[root];
+    let nodesCnt = 1;
+
+    for (const neighbor of neighbors) {
+      if (neighbor !== alreadyVisitedNode) nodesCnt += dfs(neighbor, root);
+    }
+
+    answer = Math.min(answer, Math.abs(n - nodesCnt * 2));
+
+    return nodesCnt;
+  };
+
+  dfs(1, 0);
 
   return answer;
 }
