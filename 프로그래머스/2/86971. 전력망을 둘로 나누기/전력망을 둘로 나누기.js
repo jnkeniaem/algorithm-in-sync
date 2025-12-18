@@ -31,7 +31,7 @@ function solution(n, wires) {
     // 하나씩 끊어보기 시뮬레이션
     visited[v1] = true;
     answer = Math.min(answer, Math.abs(n - 2 * getNodes(v2)));
-    if (answer === 0 || answer === 1) return answer;
+    // if (answer === 0 || answer === 1) return answer;
     visited.fill(false);
   }
 
