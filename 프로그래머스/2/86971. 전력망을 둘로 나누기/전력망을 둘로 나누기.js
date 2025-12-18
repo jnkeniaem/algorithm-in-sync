@@ -20,9 +20,7 @@ function solution(n, wires) {
   const mapIntoArray = Array.from(map);
 
   // 연결 개수가 가장 많은 순대로 sort
-  mapIntoArray.sort((x, y) => y[1].length - x[1].length);
-
-  // const isEven = n % 2 === 0;
+  // mapIntoArray.sort((x, y) => y[1].length - x[1].length);
 
   const visited = new Array(n + 1).fill(false);
   let nodeCnt = 0;
@@ -47,7 +45,6 @@ function solution(n, wires) {
       getNodes(v);
 
       answer = Math.min(answer, Math.abs(n - nodeCnt - nodeCnt));
-      // if ((isEven && answer === 0) || (!isEven && answer === 1)) return answer;
       if (answer === 0 || answer === 1) return answer;
       visited.fill(false);
       // 하나씩 끊어보기 시뮬레이션
