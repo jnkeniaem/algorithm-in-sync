@@ -1,20 +1,12 @@
 function solution(n, wires) {
   let answer = 100;
-  const map = new Map(); // v1 : [v2, ...]
+  const adjacents = new Array(n + 1).fill([]).map((_) => new Array().fill([])); 
 
   // 각 송전탑의 연결 현황 구하기
   for (let i = 0; i < wires.length; ++i) {
     const [v1, v2] = wires[i];
-
-    let val = map.get(v1);
-    if (val === undefined) {
-      map.set(v1, [v2]);
-    } else val.push(v2);
-
-    val = map.get(v2);
-    if (val === undefined) {
-      map.set(v2, [v1]);
-    } else val.push(v1);
+    adjacents[v1].push(v2);
+    adjacents[v2].push(v1);
   }
 
   const visited = new Array(n + 1).fill(false);
@@ -22,7 +14,7 @@ function solution(n, wires) {
 
   const getNodes = (root) => {
     visited[root] = true;
-    const value = map.get(root);
+    const value = adjacents[root];
     for (const node of value) {
       if (visited[node] === false) {
         visited[node] = true;
