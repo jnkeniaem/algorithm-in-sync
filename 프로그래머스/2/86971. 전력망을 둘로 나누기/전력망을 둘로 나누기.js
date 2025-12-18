@@ -1,50 +1,57 @@
-
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
 function solution(n, wires) {
-    const g=Array.from({length:n},()=>[]);
-    for(const e of wires){
-        g[e[0]-1].push(e[1]-1);
-        g[e[1]-1].push(e[0]-1);
+  let answer = 100;
+  const map = new Map(); // v1 : [v2, ...]
+
+  for (let i = 0; i < wires.length; ++i) {
+    const [v1, v2] = wires[i];
+
+    let val = map.get(v1);
+    if (val === undefined) {
+      map.set(v1, [v2]);
+    } else val.push(v2);
+
+    val = map.get(v2);
+    if (val === undefined) {
+      map.set(v2, [v1]);
+    } else val.push(v1);
+  }
+  // 각 송전탑의 연결 현황 구하기
+
+  const mapIntoArray = Array.from(map);
+
+  // 연결 개수가 가장 많은 순대로 sort
+  mapIntoArray.sort((x, y) => y[1].length - x[1].length);
+
+  // const isEven = n % 2 === 0;
+
+  const visited = new Array(n + 1).fill(false);
+  let nodeCnt = 0;
+  const getNodes = (root) => {
+    visited[root] = true;
+    const value = map.get(root);
+    for (const node of value) {
+      if (visited[node] === false) {
+        visited[node] = true;
+        nodeCnt++;
+        getNodes(node);
+      }
     }
-    const p=new Array(n).fill(-1);
-    const q=[0];
-    for(let i=0;i<q.length;++i){
-        const u=q[i];
-        for(const v of g[u])if(v!=p[u]){
-            p[v]=u;
-            q.push(v);
-        }
+  };
+
+  for (const [number, val] of mapIntoArray) {
+    for (const v of val) {
+      visited[number] = true;
+
+      nodeCnt = 1; // 본인
+
+      getNodes(v);
+
+      answer = Math.min(answer, Math.abs(n - nodeCnt - nodeCnt));
+      // if ((isEven && answer === 0) || (!isEven && answer === 1)) return answer;
+      if (answer === 0 || answer === 1) return answer;
+      visited.fill(false);
+      // 하나씩 끊어보기 시뮬레이션
     }
-    let ans=n;
-    const dp=new Array(n).fill(1);
-    for(let i=q.length;--i>0;){
-        const v=q[i];
-        dp[p[v]]+=dp[v];
-        let a=Math.abs(n-2*dp[v]);
-        if(ans>a)ans=a;
-    }
-    return ans;
+  }
+  return answer;
 }
