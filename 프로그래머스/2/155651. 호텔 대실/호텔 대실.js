@@ -16,22 +16,11 @@ function solution(book_time) {
   sorted_book_time.sort((x, y) => x[0] - y[0]);
 
   for (const [startTime, endTime] of sorted_book_time) {
-    let entered = false;
+    let roomIdx = endTimes.findIndex((elem) => startTime - 10 >= elem);
 
-    for (let i = 0; i < endTimes.length; ++i) {
-      // available → 방에 들어가기. 종료 시간넣기
-      // 현재 시간 보다 -10 이상 작으면 대체
-      if (startTime - 10 >= endTimes[i]) {
-        endTimes[i] = endTime;
-        entered = true;
-        break;
-      }
-    }
-    // 끝까지 돌았는데도 자리 없었으면
-    // unavailable → 방 파기
-    if (!entered) endTimes.push(endTime);
+    if (roomIdx !== -1) endTimes[roomIdx] = endTime;
+    else endTimes.push(endTime);
 
-    // answer max length로 갱신
     answer = Math.max(answer, endTimes.length);
   }
 
