@@ -9,27 +9,27 @@ function solution(book_time) {
   };
 
   // 시작 시간 기준으로 정렬
-  const sorted_book_time = [...book_time].sort(
-    (x, y) => getTimeInMin(x[0]) - getTimeInMin(y[0])
-  );
+  const sorted_book_time = book_time.map((elem) => [
+    getTimeInMin(elem[0]),
+    getTimeInMin(elem[1]),
+  ]);
+  sorted_book_time.sort((x, y) => x[0] - y[0]);
 
   for (const [startTime, endTime] of sorted_book_time) {
-    const endTimeInMin = getTimeInMin(endTime);
-    const startTimeInMin = getTimeInMin(startTime);
+    let entered = false;
 
-    let gotIn = false;
     for (let i = 0; i < endTimes.length; ++i) {
       // available → 방에 들어가기. 종료 시간넣기
       // 현재 시간 보다 -10 이상 작으면 대체
-      if (startTimeInMin - 10 >= endTimes[i]) {
-        endTimes[i] = endTimeInMin;
-        gotIn = true;
+      if (startTime - 10 >= endTimes[i]) {
+        endTimes[i] = endTime;
+        entered = true;
         break;
       }
     }
     // 끝까지 돌았는데도 자리 없었으면
     // unavailable → 방 파기
-    if (!gotIn) endTimes.push(endTimeInMin);
+    if (!entered) endTimes.push(endTime);
 
     // answer max length로 갱신
     answer = Math.max(answer, endTimes.length);
