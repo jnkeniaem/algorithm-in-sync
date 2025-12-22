@@ -1,21 +1,7 @@
 function solution(maps) {
-  let answer = 0;
-  let start = [0, 0];
+  const sPos = [0, 0];
+  const lPos = [0, 0];
   const [w, h] = [maps[0].length, maps.length];
-  const visited = maps.map((elem) => new Array(w).fill(false));
-
-  // S 위치 파악
-  for (let y = 0; y < h; ++y) {
-    const x = maps[y].indexOf("S");
-
-    if (x !== -1) {
-      start = [x, y];
-      break;
-    }
-  }
-
-  let [curX, curY] = start;
-  const q = [[[curX, curY]]];
   const directions = [
     [0, 1],
     [0, -1],
@@ -23,70 +9,52 @@ function solution(maps) {
     [-1, 0],
   ];
 
-  // 상 하 좌 우 움직일 수 있는 위치 반환
-  const move = (curX, curY, positions, availablePos) => {
-    const availables = [];
-
-    for (const [x, y] of directions) {
-      const newX = curX + x;
-      const newY = curY + y;
-
-      // 벽 / 미로 밖
-      if (
-        newX < 0 ||
-        newX >= w ||
-        newY < 0 ||
-        newY >= h ||
-        maps[newY][newX] === "X" ||
-        visited[newY][newX]
-      )
-        continue;
-
-      if (!pulledLever && maps[newY][newX] === "L") {
-        // q 비우기
-        // E 찾기
-        // visited 초기화
-        q.length = 0;
-        pulledLever = true;
-        for (let j = 0; j < h; ++j) {
-          for (let k = 0; k < w; ++k) {
-            visited[j][k] = false;
-          }
-        }
-        visited[newY][newX] = true;
-        positions.length = 0;
-        availablePos.length = 0;
-        return [[newX, newY]];
-      }
-
-      if (pulledLever && maps[newY][newX] === "E") {
-        exited = true;
-        return [];
-      }
-
-      availables.push([newX, newY]);
-      visited[newY][newX] = true;
+  // S, L 위치 파악
+  for (let y = 0; y < h; ++y) {
+    for (let x = 0; x < w; ++x) {
+      if (maps[y][x] === "S") [sPos[0], sPos[1]] = [x, y];
+      else if (maps[y][x] === "L") [lPos[0], lPos[1]] = [x, y];
     }
-
-    return availables;
-  };
-
-  let pulledLever = false;
-  let exited = false;
-
-  while (q.length) {
-    const positions = q.shift();
-    const availablePos = [];
-
-    for (const pos of positions) {
-      availablePos.push(...move(...pos, positions, availablePos));
-
-      if (exited) return answer + 1;
-    }
-
-    if (availablePos.length) q.push(availablePos);
-    answer++;
   }
 
-  return -1;
+  const bfs = (start, target) => {
+    const q = [[...start, 0]];
+    const visited = maps.map((_) => new Array(w).fill(false));
+
+    visited[start[1]][start[0]] = true;
+
+    while (q.length) {
+      const [curX, curY, dist] = q.shift();
+
+      for (const [x, y] of directions) {
+        const newX = curX + x;
+        const newY = curY + y;
+
+        if (
+          newX < 0 ||
+          newX >= w ||
+          newY < 0 ||
+          newY >= h ||
+          maps[newY][newX] === "X" ||
+          visited[newY][newX]
+        )
+          continue;
+
+        if (maps[newY][newX] === target) return dist + 1;
+
+        q.push([newX, newY, dist + 1]);
+        visited[newY][newX] = true;
+      }
+    }
+
+    return -1;
+  };
+
+  const distToL = bfs(sPos, "L");
+  if (distToL === -1) return -1;
+
+  const distToE = bfs(lPos, "E");
+  if (distToE === -1) return -1;
+
+  return distToL + distToE;
 }
