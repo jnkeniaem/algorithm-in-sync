@@ -1,28 +1,27 @@
 function solution(maps) {
   let answer = 0;
-  let [sx, sy] = [0, 0];
+  let start = [0, 0];
   const [w, h] = [maps[0].length, maps.length];
-  const visited = maps.map((_) => new Array(w).fill(false));
-  const directions = [
-    [0, 1],
-    [0, -1],
-    [1, 0],
-    [-1, 0],
-  ];
+  const visited = maps.map((elem) => new Array(w).fill(false));
 
   // S 위치 파악
   for (let y = 0; y < h; ++y) {
     const x = maps[y].indexOf("S");
 
     if (x !== -1) {
-      [sx, sy] = [x, y];
+      start = [x, y];
       break;
     }
   }
 
-  visited[sy][sx] = true;
-  // console.log("first visited : ", [...visited]);
-  const q = [[[sx, sy]]];
+  let [curX, curY] = start;
+  const q = [[[curX, curY]]];
+  const directions = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+  ];
 
   // 상 하 좌 우 움직일 수 있는 위치 반환
   const move = (curX, curY, positions, availablePos) => {
@@ -31,6 +30,7 @@ function solution(maps) {
     for (const [x, y] of directions) {
       const newX = curX + x;
       const newY = curY + y;
+
       // 벽 / 미로 밖
       if (
         newX < 0 ||
@@ -53,13 +53,9 @@ function solution(maps) {
             visited[j][k] = false;
           }
         }
-
         visited[newY][newX] = true;
-        while (positions.length) positions.pop();
         positions.length = 0;
         availablePos.length = 0;
-        while (availablePos.length) availablePos.pop();
-
         return [[newX, newY]];
       }
 
