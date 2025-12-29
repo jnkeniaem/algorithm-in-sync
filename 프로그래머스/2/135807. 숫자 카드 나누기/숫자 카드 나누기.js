@@ -1,30 +1,51 @@
-const getDivisor = (n) => {
-    const ret = []
-    for (let i = 1 ; i<= n**0.5 ; i++) {
-        if (!(n%i)) {
-            ret.push(i)
-            if (!(i===n**0.5)) ret.push(n/i)
-        }
-    }
-    return ret
-}
-
 function solution(arrayA, arrayB) {
-    arrayA.sort((a,b) => a-b)
-    arrayB.sort((a,b) => a-b)
-    
-    const cul = getDivisor(arrayA[0]).sort((a,b) =>a-b)
-    const young = getDivisor(arrayB[0]).sort((a,b) => a-b)
-    
-    let culNum = 0
-    for (const el of cul) {
-        culNum = arrayA.every(n => !(n%el)) && arrayB.every(n => n%el) ? el : culNum
+  let max = 0;
+  const arrayACopy = [...arrayA];
+  const arrayBCopy = [...arrayB];
+  const aMin = arrayACopy.sort((x, y) => x - y)[0];
+  const bMin = arrayBCopy.sort((x, y) => x - y)[0];
+  const aAliquot = new Set();
+  const bAliquot = new Set();
+  /*
+1. 각각 제일 작은 숫자의 약수 구하기
+1.5 공통 약수 제거하기
+2. 각 배열도 나눠떨어지는지 확인
+*/
+
+  const getAliquot = (num, set) => {
+    for (let i = 1; i * i <= num; ++i)
+      if (num % i === 0) {
+        set.add(i);
+        if (i * i !== num && num % (num / i) === 0) set.add(num / i);
+      }
+  };
+
+  getAliquot(aMin, aAliquot);
+  getAliquot(bMin, bAliquot);
+
+  for (const val of aAliquot) {
+    if (bAliquot.has(val)) {
+      continue;
     }
-    let youngNum = 0
-    for (const el of young) {
-        youngNum = arrayB.every(num => !(num%el)) && arrayA.every(n=>n%el) ? el : youngNum
+
+    if (
+      arrayACopy.every((elem) => elem % val === 0) &&
+      arrayBCopy.every((elem) => elem % val !== 0)
+    )
+      max = Math.max(max, val);
+  }
+
+  for (const val of bAliquot) {
+    if (aAliquot.has(val)) {
+      continue;
     }
-    
-    return Math.max(culNum,youngNum)
-    
+
+    if (
+      arrayACopy.every((elem) => elem % val !== 0) &&
+      arrayBCopy.every((elem) => elem % val === 0)
+    )
+      max = Math.max(max, val);
+  }
+
+  return max;
 }
