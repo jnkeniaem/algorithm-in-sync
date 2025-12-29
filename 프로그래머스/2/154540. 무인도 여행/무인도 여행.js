@@ -1,23 +1,7 @@
 function solution(maps) {
   const answer = [];
-  const visited = new Array(maps.length)
-    .fill([])
-    .map((_) => new Array(maps[0].length).fill(false));
-
-  const findStartPoint = () => {
-    for (let i = 0; i < maps.length; ++i) {
-      const idx = Array.from(maps[i]).findIndex(
-        (elem, idx) => visited[i][idx] === false && !isNaN(Number(elem))
-      );
-      if (idx === -1) continue;
-      // 숫자 있는 곳 찾기
-      // visited false
-      // X가 아닌 곳
-      return [idx, i];
-    }
-
-    return [-1, -1];
-  };
+  const [w, h] = [maps[0].length, maps.length];
+  const visited = new Array(h).fill([]).map((_) => new Array(w).fill(false));
 
   const directions = [
     [0, 1],
@@ -26,10 +10,8 @@ function solution(maps) {
     [1, 0],
   ];
 
-  while (1) {
-    const q = [findStartPoint()];
-    if (q[0][0] === -1) break;
-
+  const bfs = (x, y) => {
+    const q = [[x, y]];
     let sum = 0;
 
     while (q.length) {
@@ -41,25 +23,29 @@ function solution(maps) {
       }
 
       for (const [x, y] of directions) {
-        // X인지 끝인지 확인
         const newX = curX + x;
         const newY = curY + y;
 
         if (
           newX < 0 ||
-          newX >= maps[0].length ||
+          newX >= w ||
           newY < 0 ||
-          newY >= maps.length ||
+          newY >= h ||
           maps[newY][newX] === "X" ||
           visited[newY][newX]
         )
           continue;
         q.push([newX, newY]);
-        // console.log("sum : ", sum);
       }
     }
 
     answer.push(sum);
+  };
+
+  for (let j = 0; j < h; ++j) {
+    for (let k = 0; k < w; ++k) {
+      if (maps[j][k] !== "X" && visited[j][k] !== true) bfs(k, j);
+    }
   }
 
   return answer.length ? answer.sort((x, y) => x - y) : [-1];
