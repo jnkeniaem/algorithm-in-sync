@@ -1,29 +1,41 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
 function solution(arrayA, arrayB) {
-    const aResult = getAnswer(arrayA, arrayB)
-    const bResult = getAnswer(arrayB, arrayA)
+  let max = 0;
+  const arrayACopy = [...arrayA];
+  const arrayBCopy = [...arrayB];
+  const aMin = arrayACopy.sort((x, y) => x - y)[0];
+  const bMin = arrayBCopy.sort((x, y) => x - y)[0];
+  const aCommonAliquot = new Set();
+  const bCommonAliquot = new Set();
 
-    return aResult > bResult ? aResult : bResult
-}
+  /*
+1. 각각 제일 작은 숫자의 약수 구하기
+1.5 공통 약수 제거하기
+2. 각 배열도 나눠떨어지는지 확인
+*/
 
-function getAnswer (A, B) {
-    A.sort((a, b) => a - b)
-    for (let i = A[0]; i > 1; i--) {
-        if (A.every(a => a % i === 0) && !B.some(b => b % i === 0)) return i
+  const getAliquot = (num, set, array, anotherArray) => {
+    for (let i = 1; i * i <= num; ++i) {
+      if (
+        num % i === 0 &&
+        array.every((elem) => elem % i === 0) &&
+        anotherArray.every((elem) => elem % i !== 0)
+      ) {
+        set.add(i);
+        max = Math.max(max, i);
+      }
+      if (
+        num % (num / i) === 0 &&
+        array.every((elem) => elem % (num / i) === 0) &&
+        anotherArray.every((elem) => elem % (num / i) !== 0)
+      ) {
+        set.add(num / i);
+        max = Math.max(max, num / i);
+      }
     }
-    return 0
+  };
+
+  getAliquot(aMin, aCommonAliquot, arrayA, arrayB);
+  getAliquot(bMin, bCommonAliquot, arrayB, arrayA);
+
+  return max;
 }
