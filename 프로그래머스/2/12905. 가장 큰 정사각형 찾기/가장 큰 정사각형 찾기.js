@@ -1,36 +1,23 @@
 function solution(board) {
   let length = 0;
-  const [w, h] = [board[0].length, board.length];
+  const [col, row] = [board[0].length, board.length];
   const dp = [...board].map((elem) => [...elem]);
 
-  //   //   첫번째 열에 1 있는지 확인
-  //   const checkFirstColumnHasSquare = () => {
-  //     for (let i = 0; i < h; ++i) {
-  //       if (board[i][0] === 1) return true;
-  //     }
-
-  //     return false;
-  //   };
-
-  //   if (board[0].indexOf(1) !== -1 || checkFirstColumnHasSquare()) length = 1;
-
-  if (w === 1 || h === 1) {
-    for (let j = 0; j < h; ++j) {
-      for (let k = 0; k < w; ++k) {
-        if (board[j][k] === 1) return 1;
-      }
+  for (let r = 0; r < row; ++r) {
+    for (let c = 0; c < col; ++c) {
+      if (board[r][c] === 1) length = 1;
     }
-
-    return 0;
   }
 
-  for (let j = 1; j < h; ++j) {
-    for (let k = 1; k < w; ++k) {
-      if (dp[j][k] === 1) {
-        const [l, d, u] = [dp[j][k - 1], dp[j - 1][k - 1], dp[j - 1][k]];
+  if (col === 1 || row === 1) return length;
 
-        dp[j][k] = Math.min(l, d, u) + 1;
-        length = Math.max(dp[j][k], length);
+  for (let r = 1; r < row; ++r) {
+    for (let c = 1; c < col; ++c) {
+      if (dp[r][c] === 1) {
+        const [l, d, u] = [dp[r][c - 1], dp[r - 1][c - 1], dp[r - 1][c]];
+
+        dp[r][c] = Math.min(l, d, u) + 1;
+        length = Math.max(dp[r][c], length);
       }
     }
   }
