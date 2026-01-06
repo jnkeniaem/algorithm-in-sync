@@ -3,16 +3,26 @@ function solution(board) {
   const [w, h] = [board[0].length, board.length];
   const dp = [...board].map((elem) => [...elem]);
 
-  //   첫번째 열에 1 있는지 확인
-  const checkFirstColumnHasSquare = () => {
-    for (let i = 0; i < h; ++i) {
-      if (board[i][0] === 1) return true;
+  //   //   첫번째 열에 1 있는지 확인
+  //   const checkFirstColumnHasSquare = () => {
+  //     for (let i = 0; i < h; ++i) {
+  //       if (board[i][0] === 1) return true;
+  //     }
+
+  //     return false;
+  //   };
+
+  //   if (board[0].indexOf(1) !== -1 || checkFirstColumnHasSquare()) length = 1;
+
+  if (w === 1 || h === 1) {
+    for (let j = 0; j < h; ++j) {
+      for (let k = 0; k < w; ++k) {
+        if (board[j][k] === 1) return 1;
+      }
     }
 
-    return false;
-  };
-
-  if (board[0].indexOf(1) !== -1 || checkFirstColumnHasSquare()) length = 1;
+    return 0;
+  }
 
   for (let j = 1; j < h; ++j) {
     for (let k = 1; k < w; ++k) {
