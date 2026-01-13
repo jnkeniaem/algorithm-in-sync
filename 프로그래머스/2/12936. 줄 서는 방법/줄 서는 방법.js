@@ -1,25 +1,23 @@
 function solution(n, k) {
   const permutation = [];
   const people = new Array(n).fill(0).map((_, idx) => idx + 1);
-  const factorials = new Array(n + 1).fill(1); // factorials[2] = 2!
+  const factorials = new Array(n + 1).fill(1);
+  let cur = k - 1;
 
-  for (let i = 2; i <= n; ++i) factorials[n] *= i;
+  factorials.reduce((acc, _, idx, ary) => {
+    const factorial = acc * idx;
+    ary[idx] = factorial;
+    return factorial;
+  }); // factorials[n] = n!
 
-  let cur = k;
-
-  for (let i = n - 1; i >= 2; --i) {
-    factorials[i] = Math.floor(factorials[i + 1] / (i + 1));
-
+  for (let i = n - 1; i >= 0; --i) {
     const factorial = factorials[i];
-    const quota = Math.floor((cur - 1) / factorial);
+    const quota = Math.floor(cur / factorial);
 
-    if (quota) cur -= factorial * quota;
+    cur = cur % factorial;
     permutation.push(people[quota]);
     people.splice(quota, 1);
   }
-
-  permutation.push(people[cur - 1]);
-  permutation.push(people[2 - cur]);
 
   return permutation;
 }
