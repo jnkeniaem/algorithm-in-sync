@@ -4,7 +4,6 @@
  * @return {number[]}
  */
 var twoSum = function (nums, target) {
-  // const set = new Set(nums);
   const map = new Map();
 
   for (let i = 0; i < nums.length; ++i) {
