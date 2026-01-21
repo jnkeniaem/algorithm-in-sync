@@ -8,14 +8,10 @@ var twoSum = function (nums, target) {
 
   for (let i = 0; i < nums.length; ++i) {
     const elem = nums[i];
-    if (map.has(elem) && elem * 2 === target) return [i, map.get(elem)];
-    map.set(elem, i);
-  }
-
-  for (let i = 0; i < nums.length; ++i) {
-    const elem = nums[i];
     const pair = target - elem;
+    const pairIdx = map.get(pair);
 
-    if (elem !== pair && map.has(pair)) return [i, map.get(pair)];
+    if (pairIdx !== undefined) return [i, pairIdx];
+    map.set(elem, i);
   }
 };
