@@ -10,18 +10,6 @@ var merge = function (nums1, m, nums2, n) {
   let cur1 = m - 1;
   let cur2 = n - 1;
 
-  if (n === 0) {
-    // console.log(nums1);
-    return;
-  }
-  if (m === 0) {
-    for (let i = 0; i < n; ++i) {
-      nums1[i] = nums2[i];
-    }
-    // console.log(nums1);
-    return;
-  }
-
   while (cur2 >= 0) {
     if (cur1 >= 0 && nums1[cur1] > nums2[cur2]) {
       nums1[end1] = nums1[cur1];
@@ -30,8 +18,7 @@ var merge = function (nums1, m, nums2, n) {
       nums1[end1] = nums2[cur2];
       cur2--;
     }
+
     end1--;
   }
-
-  // console.log(nums1);
 };
