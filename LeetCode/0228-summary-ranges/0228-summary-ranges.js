@@ -8,24 +8,24 @@ var summaryRanges = function (nums) {
   if (len === 1) return [`${nums[0]}`];
 
   const ranges = [];
-
   let [s, e] = [nums[0], nums[0]];
+
+  const addRange = () => {
+    const range = e - s ? `${s}->${e}` : `${s}`;
+    ranges.push(range);
+  };
 
   for (let i = 1; i < len; ++i) {
     const num = nums[i];
 
     if (e + 1 !== num) {
-      if (e - s) ranges.push(`${s}->${e}`);
-      else ranges.push(`${s}`);
+      addRange();
       s = num;
     }
     e = num;
-
-    if (i === len - 1) {
-      if (e - s) ranges.push(`${s}->${e}`);
-      else ranges.push(`${s}`);
-    }
   }
+
+  addRange();
 
   return ranges;
 };
