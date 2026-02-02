@@ -5,6 +5,7 @@
 var summaryRanges = function (nums) {
   let len = nums.length;
   if (len === 0) return [];
+  if (len === 1) return [`${nums[0]}`];
 
   const ranges = [];
 
