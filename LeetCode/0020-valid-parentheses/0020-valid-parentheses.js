@@ -3,11 +3,7 @@
  * @return {boolean}
  */
 var isValid = function (s) {
-  // const len = s.length;
-  // if (len % 2) return false;
   const stack = []; // open brackets
-
-  const openSet = new Set("({[");
   const map = new Map([
     [")", "("],
     ["}", "{"],
@@ -15,13 +11,13 @@ var isValid = function (s) {
   ]);
 
   for (const paranthesis of s) {
-    if (openSet.has(paranthesis)) {
-      stack.push(paranthesis);
-    } else {
+    if (map.has(paranthesis)) {
       const top = stack.pop();
       if (map.get(paranthesis) !== top) return false;
+    } else {
+      stack.push(paranthesis);
     }
   }
 
-  return true;
+  return stack.length ? false : true;
 };
