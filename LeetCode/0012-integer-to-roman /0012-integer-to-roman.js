@@ -4,40 +4,29 @@
  */
 var intToRoman = function (num) {
   let romanNum = "";
-  const numInStr = num.toString();
-  const numLen = numInStr.length;
-  const dict = {
-    1: "I",
-    5: "V",
-    10: "X",
-    50: "L",
-    100: "C",
-    500: "D",
-    1000: "M",
-  };
+  const dict = [
+    [1, "I"],
+    [4, "IV"],
+    [5, "V"],
+    [9, "IX"],
+    [10, "X"],
+    [40, "XL"],
+    [50, "L"],
+    [90, "XC"],
+    [100, "C"],
+    [400, "CD"],
+    [500, "D"],
+    [900, "CM"],
+    [1000, "M"],
+  ];
 
-  for (let i = 0; i < numLen; ++i) {
-    const firstNum = Number(numInStr[i]);
-    let newRoman = "";
-    const exponent = numLen - 1 - i;
-    if (firstNum === 4 || firstNum === 9) {
-      // (firstNum + 1) * 10 ** i - 10 ** exponent;
-      const toBeSubtracted = (firstNum + 1) * 10 ** exponent;
-      const toSubtract = 10 ** exponent;
+  for (let i = dict.length - 1; i >= 0; --i) {
+    const [val, sym] = dict[i];
+    const repeatCnt = Math.floor(num / val);
 
-      newRoman = dict[toSubtract] + dict[toBeSubtracted];
-    } else {
-      let toRepeat = 0;
-
-      if (firstNum >= 5) {
-        toRepeat = firstNum - 5;
-        newRoman = dict[5 * 10 ** exponent];
-      } else toRepeat = firstNum;
-
-      newRoman += dict[10 ** exponent].repeat(toRepeat);
-    }
-
-    romanNum += newRoman;
+    romanNum += sym.repeat(repeatCnt);
+    num -= repeatCnt * val;
   }
+
   return romanNum;
 };
