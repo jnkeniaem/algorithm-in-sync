@@ -6,10 +6,9 @@
 var twoSum = function (numbers, target) {
   let left = 0;
   let right = numbers.length - 1;
-  let sum = 0;
 
   while (left !== right) {
-    sum = numbers[left] + numbers[right];
+    const sum = numbers[left] + numbers[right]; //
 
     if (sum < target) left++;
     else if (sum > target) right--;
